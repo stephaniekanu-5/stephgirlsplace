@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel | Stephgirl'sPlace</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        min-height: 100vh;
+        background-image:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+         url(images/stephgirl\'s\ Logo1.jpeg);
+        background-position: center;
+        background-size: cover;
+        background-attachment: fixed;
+        color: #fff;
+      }
+      header {
+        text-align: center;
+        padding: 20px;
+        color: #fb9fc1;
+        padding: 30px 20px 10px 20px;
+        background: #000;
+      }
+
+      main {
+        padding: 20px;
+      }
+
+      .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .admin-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .admin-card img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+      }
+
+      .admin-card h3 {
+        margin: 8px 0;
+      }
+
+      .admin-card p {
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      /* ===== ADMIN PANEL ===== */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
+      }
+
+      th {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      td button {
+        padding: 6px 10px;
+        margin-right: 5px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .view-btn,
+      .delete-btn {
+        padding: 6px 12px;
+        margin: 2px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: 0.2s;
+      }
+
+      .view-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .view-btn:hover {
+        background-color: #45a049;
+      }
+
+      .delete-btn {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .delete-btn:hover {
+        background-color: #da190b;
+      }
+      .view-btn::before {
+        content: "👁 ";
+      }
+      .delete-btn::before {
+        content: "🗑 ";
+      }
+
+      #logout-btn {
+        margin-top: 20px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        background-color: #da190b;
+        color: #fff;
+        cursor: pointer;
+      }
+      #logout-btn:hover {
+        background-color: #f44336;
+      }
+
+      footer {
+        text-align: center;
+        padding: 15px;
+        background: black;
+        color: #fff;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Admin Panel</h1>
+      <p>Community Members Management</p>
+    </header>
+
+    <main class="profile-container">
+      
+      <div id="adminMembers" class="admin-grid"></div>
+
+      <button id="logout-btn">Logout</button>
+
+      <div class="profile-card">
+        <h1>Community Members</h1>
+
+        <table id="members-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age Range</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- JS injects rows -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Stephgirl'sPlace</p>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const ADMIN_EMAILS = ["stephaniekanu2@gmail.com"];
+
+        const currentUser = localStorage.getItem("currentUser");
+
+        // 🔐 ADMIN GUARD
+        if (!currentUser || !ADMIN_EMAILS.includes(currentUser)) {
+          alert("Access denied: Admins only");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // LOAD MEMBERS (OBJECT)
+        let profiles =
+          JSON.parse(localStorage.getItem("communityProfiles")) || {};
+
+        const tableBody = document.querySelector("#members-table tbody");
+
+        function renderMembers() {
+          tableBody.innerHTML = "";
+
+          const members = Object.entries(profiles);
+
+          if (!members.length) {
+            tableBody.innerHTML = `
+        <tr>
+          <td colspan="4">No members found</td>
+        </tr>
+      `;
+            return;
+          }
+
+          members.forEach(([email, member]) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+        <td>
+          <img src="${member.image || "images/default-profile.png"}"
+            style="width:40px;height:40px;border-radius:50%;vertical-align:middle;margin-right:6px;" />
+          ${member.name}
+        </td>
+        <td>${email}</td>
+        <td>${member.ageRange || "—"}</td>
+        <td>
+           <button class="view-btn" onclick="viewMember('${email}')">View</button>
+           <button class="delete-btn" onclick="deleteMember('${email}')">Delete</button>
+        </td>
+
+      `;
+
+            tableBody.appendChild(row);
+          });
+        }
+        renderMembers();
+
+        // VIEW MEMBER
+        window.viewMember = (email) => {
+          const m = profiles[email];
+          if (!m) return;
+
+          alert(
+            `Name: ${m.name}
+            Email: ${email}
+            Age: ${m.ageRange || "—"}
+            Location: ${m.location || "—"}
+            Interests: ${m.interests?.join(", ") || "—"}
+            Bio: ${m.bio || "—"}`,
+          );
+        };
+
+        // DELETE MEMBER
+        window.deleteMember = (email) => {
+          if (!confirm("Delete this member?")) return;
+
+          delete profiles[email];
+          localStorage.setItem("communityProfiles", JSON.stringify(profiles));
+
+          renderMembers();
+        };
+        // LOGOUT
+        document.getElementById("logout-btn").addEventListener("click", () => {
+          localStorage.removeItem("currentUser");
+          window.location.href = "index.html";
+        });
+      });
+    </script>
+  </body>
+</html>

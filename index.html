@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stephgirl'sPlace</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #000;
+  position: relative;
+  color: #fff;
+  background-image: url(images/stephgirl\'s\ Logo2.jpeg);
+  background-position: center;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+@keyframes waveEffect {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(1.1); }
+}
+
+/* Containers */
+.login-container,
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  z-index: 10;
+}
+
+/* Cards */
+.login-card,
+.signup-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 0 50px rgba(76, 0, 150, 0.3),
+              0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.card-subtitle {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 25px;
+}
+
+/* Social buttons */
+.social-login {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  cursor: pointer;
+}
+
+.social-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.divider-text {
+  margin: 0 10px;
+  color: #aaa;
+}
+
+/* Forms */
+form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+form input {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+}
+
+button:hover {
+  background: #555;
+}
+
+a:hover {
+  color: blue;
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+footer {
+  color: #fff;
+  text-align: center;
+  margin: 40px 0;
+  padding: 20px;
+  background: #000;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-waves"></div>
+
+<header style="background:pink;text-align:center;">
+  <h1>Get Started Here 👇🏿</h1>
+</header>
+<form id="login-form">
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="card-title">Login</h1>
+      <p class="card-subtitle">Welcome back</p>
+
+      <div class="social-login">
+        <button type="button" class="social-btn">Google</button>
+        <button type="button" class="social-btn">Apple</button>
+      </div>
+
+      <div class="divider">
+        <span class="divider-text">or</span>
+      </div>
+
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" required>
+
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" required>
+
+      <button type="submit">Login</button>
+
+      <p style="margin-top:15px;">
+        <a href="#">Forgot password?</a>
+      </p>
+    </div>
+  </div>
+</form>
+
+<!-- SIGNUP -->
+<form id="signup-form">
+  <div class="signup-container">
+    <div class="signup-card">
+      <h2>Create Account</h2><br>
+
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required>
+
+      <label for="signup-email">Email</label>
+      <input type="email" id="signup-email" required>
+
+      <label for="signup-password">Password</label>
+      <input type="password" id="signup-password" required>
+
+      <label for="confirm-password">Confirm Password</label>
+      <input type="password" id="confirm-password" required>
+
+      <button type="submit">Sign Up</button>
+    </div>
+  </div>
+</form>
+
+<footer>
+  <p>&copy; 2025 Stephgirl'sPlace</p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ===== LOGIN =====
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || {};
+
+      if (!users[email] || users[email].password !== password) {
+        alert("Invalid email or password");
+        return;
+      }
+
+      // Save logged-in user
+      localStorage.setItem("currentUser", email);
+
+      alert(`Login successful!\nWelcome ${email}`);
+      loginForm.reset();
+
+      setTimeout(() => {
+        window.location.href = 'landingPage.html';
+      }, 500);
+    });
+  }
+
+  // ===== SIGNUP =====
+  const signupForm = document.getElementById('signup-form');
+  if (signupForm) {
+    signupForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+
+      if (!email || !password || !confirm) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      if (password !== confirm) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || {};
+
+      if (users[email]) {
+        alert("Account already exists. Please login.");
+        return;
+      }
+
+      // Save user
+      users[email] = { password };
+      localStorage.setItem("users", JSON.stringify(users));
+
+      alert('Account created successfully!');
+      signupForm.reset();
+
+      setTimeout(() => {
+        window.location.href = 'landingPage.html';
+      }, 500);
+    });
+  }
+
+});
+</script>
+</body>
+</html>

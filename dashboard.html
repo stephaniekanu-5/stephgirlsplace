@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | Stephgirl'sPlace</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    min-height: 100vh;
+    background-image:linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)),
+     url(images/stephgirl\'s\ Logo2.jpeg);
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+header {
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+    padding: 30px 20px 10px 20px;
+    background: #7c7373;
+}
+main {
+    padding: 20px;
+}
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+img {
+    display: block;
+    margin: 0 auto 20px auto;
+}
+.profile-card {
+    background:#fdedf2;
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+.profile-card h2 {
+    margin-bottom: 35px;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #6200ea;
+}
+.profile-card p {
+    margin: 20px 0;
+
+}
+#edit-btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #6200ea;
+    color: #fff;
+    cursor: pointer;
+}
+ 
+#logout-btn {
+    color: #fff;
+    background-color: crimson;
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#edit-btn:hover {
+    background-color: #4500b5;
+} 
+#logout-btn:hover {
+    background-color: #a80000;
+}     
+/* ===== PROFILE FORM ===== */ 
+#edit-form label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: 500;
+}
+#edit-form input,
+#edit-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 10px;
+}
+#edit-form button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    background: #e91e63;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+#edit-form button:hover {
+    background: #d81b60;
+}
+.backBnt {
+    text-align: center;
+    margin: 20px;
+}
+.backBnt button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #6200ea;
+    color: #fff;
+    cursor: pointer;
+}
+.backBnt button:hover {
+    background-color: #4500b5;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+} 
+footer p {
+    margin: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>My Community Profile</h1>
+  <p>Welcome back 💖</p>
+</header>
+
+<main class="profile-container">
+
+  <div class="profile-card" id="profile-view">
+    <h2 id="display-name"></h2>
+    <img id="dashboardImage"
+     style="width:140px;height:140px;border-radius:50%;" />
+    <p><strong>Email:</strong> <span id="display-email"></span></p>
+    <p><strong>Age Range:</strong> <span id="display-age"></span></p>
+    <p><strong>Location:</strong> <span id="display-location"></span></p>
+    <p><strong>Interests:</strong> <span id="display-interests"></span></p>
+    <p><strong>Bio:</strong></p>
+    <p id="display-bio"></p>
+
+    <button id="edit-btn">Edit Profile ✏️</button>
+    <button id="logout-btn">Logout</button>
+  </div>
+
+  <!-- EDIT FORM -->
+  <form id="edit-form" class="profile-card" style="display:none">
+    <label for="edit-image">Change Profile Image</label>
+    <input type="file" id="edit-image" accept="image/*" />
+
+    <img
+    id="edit-image-preview"
+    src=""
+    alt="Preview"
+    style="width:120px;height:120px;border-radius:50%;display:none;margin-top:10px;"
+    />
+
+    <label>Full Name</label>
+    <input type="text" id="edit-name" required />
+
+    <label>Location</label>
+    <input type="text" id="edit-location" />
+
+    <label>Bio</label>
+    <textarea id="edit-bio" rows="4"></textarea>
+
+    <button type="submit">Save Changes 💾</button>
+    <button type="button" id="cancel-btn">Cancel</button>
+
+  </form>
+
+</main>
+<section class="backBnt">
+      <a href="landingPage.html"><button>Back Home</button></a>
+</section>
+<footer>
+  <p>&copy; 2025 Stephgirl'sPlace</p>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔐 AUTH CHECK
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const profiles =
+    JSON.parse(localStorage.getItem("communityProfiles")) || {};
+
+  const profile = profiles[currentUser];
+
+  if (!profile) {
+    window.location.href = "profile.html";
+    return;
+  }
+
+  // ===== DISPLAY PROFILE =====
+  document.getElementById("display-name").textContent = profile.name;
+  document.getElementById("display-email").textContent = profile.email;
+  document.getElementById("display-age").textContent = profile.ageRange;
+  document.getElementById("display-location").textContent =
+    profile.location || "—";
+  document.getElementById("display-interests").textContent =
+    profile.interests?.length ? profile.interests.join(", ") : "—";
+  document.getElementById("display-bio").textContent =
+    profile.bio || "—";
+
+  if (profile.image) {
+    document.getElementById("dashboardImage").src = profile.image;
+  }
+
+  // ===== EDIT MODE =====
+  const editBtn = document.getElementById("edit-btn");
+  const cancelBtn = document.getElementById("cancel-btn");
+  const editForm = document.getElementById("edit-form");
+  const profileView = document.getElementById("profile-view");
+
+  editBtn.addEventListener("click", () => {
+    editForm.style.display = "block";
+    profileView.style.display = "none";
+
+    document.getElementById("edit-name").value = profile.name;
+    document.getElementById("edit-location").value = profile.location || "";
+    document.getElementById("edit-bio").value = profile.bio || "";
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    editForm.style.display = "none";
+    profileView.style.display = "block";
+  });
+
+  const imageInput = document.getElementById("edit-image");
+    const imagePreview = document.getElementById("edit-image-preview");
+
+    if (profile.image) {
+    imagePreview.src = profile.image;
+    imagePreview.style.display = "block";
+    }
+
+    imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        imagePreview.src = reader.result;
+        imagePreview.style.display = "block";
+        profile.image = reader.result; // save base64
+    };
+    reader.readAsDataURL(file);
+    });
+
+
+  // ===== SAVE CHANGES =====
+  editForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    profile.name =
+      document.getElementById("edit-name").value.trim();
+    profile.location =
+      document.getElementById("edit-location").value.trim();
+    profile.bio =
+      document.getElementById("edit-bio").value.trim();
+
+    profiles[currentUser] = profile;
+    localStorage.setItem(
+      "communityProfiles",
+      JSON.stringify(profiles)
+    );
+
+    alert("Profile updated successfully 💖");
+    window.location.reload();
+  });
+
+  // ===== LOGOUT =====
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "index.html";
+  });
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile page</title> 
+    <style>
+* {
+  margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+  min-height: 100vh;
+    background: #000;
+    position: relative;
+    color: #000;
+    background-image: url(images/stephgirl\'s\ Logo2.jpeg);
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+
+}
+header {
+  text-align: center;
+}
+
+
+       /* ===== PROFILE FORM ===== */
+.profile-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.profile-card {
+  background: rgba(255,255,255,0.08);
+  padding: 40px;
+  max-width: 450px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.profile-card label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: 500;
+}
+
+.profile-card input,
+.profile-card select,
+.profile-card textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.profile-card button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #e91e63;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-card button:hover {
+  background: #d81b60;
+}
+ 
+    </style>
+</head>
+<body>
+    <header>
+  <h1>Community Profile</h1>
+  <p>Tell us about yourself 💖</p>
+</header>
+    <nav style="text-align:center;margin:20px;">
+  <strong><a href="landingPage.html">Back Home</a></strong>
+</nav>
+<main class="profile-container">
+
+  <form id="profile-form" class="profile-card">
+    <label>Profile Picture</label>
+
+    <input type="file" id="profileImage" accept="image/*" />
+
+    <img id="imagePreview" 
+     src="images/default-avatar.png" 
+     alt="Preview" 
+     style="width:120px;height:120px;border-radius:50%;margin:10px 0;" />
+
+    <label for="fullName">Full Name</label>
+    <input type="text" id="fullName" required />
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" required />
+
+    <label for="ageRange">Age Range</label>
+    <select id="ageRange" required>
+      <option value="">Select</option>
+      <option>18–24</option>
+      <option>25–34</option>
+      <option>35–44</option>
+      <option>45+</option>
+    </select>
+
+    <label for="location">Location</label>
+    <input type="text" id="location" placeholder="City, Country" />
+
+    <label>Interests</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" value="Self-care"> Self-care</label>
+      <label><input type="checkbox" value="Fashion"> Fashion</label>
+      <label><input type="checkbox" value="Wellness"> Wellness</label>
+      <label><input type="checkbox" value="Career"> Career</label>
+      <label><input type="checkbox" value="Community"> Community</label>
+    </div>
+
+    <label for="bio">Short Bio</label>
+    <textarea id="bio" rows="4" placeholder="Tell us a little about you..."></textarea>
+
+    <button type="submit">Join the Community 🌸</button>
+
+  </form>
+</main>
+
+<footer>
+  <p>&copy; 2025 Stephgirl'sPlace</p>
+</footer>
+
+<script>
+const profileForm = document.getElementById("profile-form");
+
+// 🔐 Protect page
+const currentUser = localStorage.getItem("currentUser");
+if (!currentUser) {
+  alert("Please login first");
+  window.location.href = "index.html";
+}
+
+// 📝 Handle form submission
+if (profileForm) {
+  profileForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const profileData = {
+      name: document.getElementById("fullName").value.trim(),
+      email: currentUser, // 🔥 ALWAYS use logged-in user
+      ageRange: document.getElementById("ageRange").value,
+      location: document.getElementById("location").value.trim(),
+      interests: [...document.querySelectorAll(".checkbox-group input:checked")]
+        .map(cb => cb.value),
+      bio: document.getElementById("bio").value.trim(),
+      image: document.getElementById("imagePreview").dataset.image || ""
+    };
+
+    if (!profileData.name || !profileData.ageRange) {
+      alert("Please complete all required fields.");
+      return;
+    }
+
+    const profiles =
+      JSON.parse(localStorage.getItem("communityProfiles")) || {};
+
+    profiles[currentUser] = profileData;
+
+    localStorage.setItem(
+      "communityProfiles",
+      JSON.stringify(profiles)
+    );
+
+    alert("Welcome to the Stephgirl'sPlace community 💖");
+    window.location.href = "dashboard.html";
+  });
+}
+
+// 🖼 Image upload preview
+const imageInput = document.getElementById("profileImage");
+const imagePreview = document.getElementById("imagePreview");
+
+if (imageInput && imagePreview) {
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      imagePreview.src = reader.result;
+      imagePreview.dataset.image = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+
+</body>
+</html>
