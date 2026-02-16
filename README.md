@@ -29,8 +29,7 @@
 └── images/
 
 ## 🚀 Live Demo
-👉 https://your-netlify-link.netlify.app
-
+👉 (https://stephgirls-foundation.netlify.app/)
 ## 🎯 Purpose
 Stephgirl’sPlace was created to provide a safe, inspiring digital space where women can connect, share interests, and grow together.
 
@@ -51,6 +50,7 @@ Frontend Developer
 ---
 
 ✨ *Empowering women, connecting communities, celebrating confidence.*
+
 
 
 
